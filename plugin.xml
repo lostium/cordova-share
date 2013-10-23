@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
+        id="com.lostium.cordova.share"
+        version="1.0.0">
+
+    <name>SocialShare</name>
+    <author>SARATH DR & Lostium Project</author>
+    <description>Share content at Social Networks.</description>
+
+    <js-module src="www/socialShare.js" name="SocialShare">
+        <clobbers target="window.socialShare" />
+    </js-module>
+
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="SocialShare">
+                <param name="android-package" value="com.lostium.cordova.share.SocialShare"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/SocialShare.java" target-dir="src/com/lostium/cordova/share" />
+    </platform>
+
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="SocialShare">
+                <param name="ios-package" value="SocialShare" />
+            </feature>
+        </config-file>
+        <header-file src="src/ios/SocialShare.h" />
+        <source-file src="src/ios/SocialShare.m" />
+    </platform>
+
+</plugin>
