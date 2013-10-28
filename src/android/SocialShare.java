@@ -59,7 +59,32 @@ public class SocialShare extends CordovaPlugin {
                 List<ResolveInfo> resInfo = this.cordova.getActivity().getPackageManager().queryIntentActivities(share, 0);
                 if (!resInfo.isEmpty()) {
 
-                    String nameApp = "twitter";
+                    
+                    for (ResolveInfo info : resInfo) {
+                        Intent targetedShare = new Intent(android.content.Intent.ACTION_SEND);
+                        targetedShare.setType("text/plain"); // put here your mime type
+
+                        if (info.activityInfo.packageName.toLowerCase().matches("(?ix)tweet|twit|hootsuite")
+                                || info.activityInfo.name.toLowerCase().matches("(?ix)tweet|twit|hootsuite")) {
+
+                            targetedShare.putExtra(Intent.EXTRA_TEXT, args.getString(0).concat(args.length() > 1 ? " ".concat(args.getString(1)) : ""));
+                            targetedShare.setPackage(info.activityInfo.packageName);
+                            targetedShareIntents.add(targetedShare);
+                        }
+                    }
+
+                    Intent chooserIntent = Intent.createChooser(targetedShareIntents.remove(0), "Select app to share");
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[]{}));
+                    this.cordova.startActivityForResult(this, chooserIntent, 0);
+                }
+            }else if (action.equals("showFacebook")) {
+                List<Intent> targetedShareIntents = new ArrayList<Intent>();
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                List<ResolveInfo> resInfo = this.cordova.getActivity().getPackageManager().queryIntentActivities(share, 0);
+                if (!resInfo.isEmpty()) {
+
+                	String nameApp = "facebook";
                     for (ResolveInfo info : resInfo) {
                         Intent targetedShare = new Intent(android.content.Intent.ACTION_SEND);
                         targetedShare.setType("text/plain"); // put here your mime type
@@ -67,7 +92,7 @@ public class SocialShare extends CordovaPlugin {
                         if (info.activityInfo.packageName.toLowerCase().contains(nameApp)
                                 || info.activityInfo.name.toLowerCase().contains(nameApp)) {
 
-                            targetedShare.putExtra(Intent.EXTRA_TEXT, args.getString(0).concat(args.length() > 1 ? " ".concat(args.getString(1)) : ""));
+                        	targetedShare.putExtra(Intent.EXTRA_TEXT, args.getString(0).concat(args.length()>1?" ".concat(args.getString(1)):""));
                             targetedShare.setPackage(info.activityInfo.packageName);
                             targetedShareIntents.add(targetedShare);
                         }
